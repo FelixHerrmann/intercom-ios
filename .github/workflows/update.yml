@@ -12,4 +12,4 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Run update script
-      run: swift update.swift ${{ GITHUB_TOKEN }}
+      run: swift update.swift ${{ secrets.GITHUB_TOKEN }}
