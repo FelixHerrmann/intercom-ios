@@ -1,0 +1,15 @@
+name: Update
+
+on:
+  schedule:
+    - cron:  '1 * * * *'
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: macos-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+    - name: Run update script
+      run: swift update.swift
