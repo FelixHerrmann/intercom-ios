@@ -99,13 +99,20 @@ let b = releasesPublisher(url: packageURL)
 
 Publishers.Zip(a, b)
     .sink { zip in
-        guard let intercomLatest = zip.0.first, let packageLatest = zip.1.first else { exit(EXIT_FAILURE) }
+        guard let intercomLatest = zip.0.first, let packageLatest = zip.1.first else {
+            print("One of the repositories has no releases")
+            exit(EXIT_FAILURE)
+        }
         if intercomLatest.tagName == packageLatest.tagName {
+            print("Version \(packageLatest.tagName) is latest")
             exit(EXIT_SUCCESS)
         } else {
             packageDotSwiftPublisher(url: packageDotSwiftURL)
                 .sink { packageDotSwift in
-                    guard packageDotSwift != "" else { exit(EXIT_FAILURE) }
+                    guard packageDotSwift != "" else {
+                        print("New Package.swift not available")
+                        exit(EXIT_FAILURE)
+                    }
                     updatePackageDotSwift(with: packageDotSwift)
                     pushChanges(release: intercomLatest)
                     
@@ -114,9 +121,10 @@ Publishers.Zip(a, b)
                         .sink { completion in
                             switch completion {
                             case .failure(let error):
-                                print(error)
+                                print("Create release failed: ", error)
                                 exit(EXIT_FAILURE)
                             case .finished:
+                                print("Release \(intercomLatest.tagName) created successfully")
                                 exit(EXIT_SUCCESS)
                             }
                         } receiveValue: { _ in }
@@ -134,8 +142,9 @@ func updatePackageDotSwift(with newContent: String) {
     let file = FileManager.default.currentDirectoryPath + "/Package.swift"
     do {
         try newContent.write(toFile: file, atomically: true, encoding: .utf8)
+        print("Package.swift updated successfully")
     } catch {
-        print(error)
+        print("Update Package.swift file failed: ", error)
         exit(EXIT_FAILURE)
     }
 }
@@ -145,8 +154,9 @@ func pushChanges(release: Release) {
         try git("add", ".")
         try git("commit", "-m", "Bump to \(release.tagName)")
         try git("push")
+        print("Changes pushed to master successfully")
     } catch {
-        print(error)
+        print("Push git failed: ", error)
         exit(EXIT_FAILURE)
     }
 }
