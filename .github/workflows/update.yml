@@ -13,5 +13,7 @@ jobs:
     
     steps:
     - uses: actions/checkout@v2
+    - name: Compile update script
+      run: xcrun swiftc -parse-as-library update.swift
     - name: Run update script
-      run: xcrun swift update.swift ${{ secrets.GITHUB_TOKEN }}
+      run: ./update ${{ secrets.GITHUB_TOKEN }}
