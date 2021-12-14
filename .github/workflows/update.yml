@@ -4,8 +4,6 @@ on:
   schedule:
     - cron:  '0 0,6,12,18 * * *'
   workflow_dispatch:
-env:
-  DEVELOPER_DIR: /Applications/Xcode_13.2.app/Contents/Developer
 
 jobs:
   update:
@@ -13,5 +11,7 @@ jobs:
     
     steps:
     - uses: actions/checkout@v2
+    - name: Set Xcode 13.2
+      run: sudo xcode-select --switch /Applications/Xcode_13.2.app/Contents/Developer
     - name: Run update script
       run: swift update.swift ${{ secrets.GITHUB_TOKEN }}
