@@ -110,53 +110,46 @@ func pushChanges(release: Release) throws {
 
 // MARK: - Execution
 
-let executionTask = Task.detached {
-    guard let intercomReleasesURL = URL(string: "https://api.github.com/repos/intercom/intercom-ios/releases"),
-          let packageReleasesURL = URL(string: "https://api.github.com/repos/FelixHerrmann/intercom-ios/releases"),
-          let packageDotSwiftURL = URL(string: "https://raw.githubusercontent.com/intercom/intercom-ios/master/Package.swift") else {
-        exit(EXIT_FAILURE)
-    }
+@main
+struct Update {
     
-    let accessToken = try accessToken()
-    
-    print("Checking and comparing releases ...")
-    let intercomReleases = try await releases(from: intercomReleasesURL)
-    let packageReleases = try await releases(from: packageReleasesURL)
-    guard let intercomLatest = intercomReleases.first, let packageLatest = packageReleases.first else {
-        print("One of the repositories has no releases")
-        exit(EXIT_FAILURE)
-    }
-    guard intercomLatest.tagName != packageLatest.tagName else {
-        print("Version \(packageLatest.tagName) is latest")
-        exit(EXIT_SUCCESS)
-    }
-    
-    print("Updating Package.swift ...")
-    let packageDotSwift = try await packageDotSwift(from: packageDotSwiftURL)
-    guard packageDotSwift != "" else {
-        print("New Package.swift not available")
-        exit(EXIT_FAILURE)
-    }
-    try updatePackageDotSwift(with: packageDotSwift)
-    print("Package.swift updated successfully")
-    
-    print("Pushing changes to master ...")
-    try pushChanges(release: intercomLatest)
-    print("Changes pushed to master successfully")
-    
-    print("Creating release \(intercomLatest.tagName) ...")
-    let payload = ReleasePayload(tagName: intercomLatest.tagName, name: intercomLatest.tagName, body: intercomLatest.body)
-    try await createRelease(accessToken: accessToken, url: packageReleasesURL, payload: payload)
-    print("Release \(intercomLatest.tagName) created successfully")
-}
-
-Task {
-    do {
-        _ = try await executionTask.value
-    } catch {
-        print("Error:", error)
-        exit(EXIT_FAILURE)
+    static func main() async throws {
+        guard let intercomReleasesURL = URL(string: "https://api.github.com/repos/intercom/intercom-ios/releases"),
+              let packageReleasesURL = URL(string: "https://api.github.com/repos/FelixHerrmann/intercom-ios/releases"),
+              let packageDotSwiftURL = URL(string: "https://raw.githubusercontent.com/intercom/intercom-ios/master/Package.swift") else {
+            exit(EXIT_FAILURE)
+        }
+        
+        let accessToken = try accessToken()
+        
+        print("Checking and comparing releases ...")
+        let intercomReleases = try await releases(from: intercomReleasesURL)
+        let packageReleases = try await releases(from: packageReleasesURL)
+        guard let intercomLatest = intercomReleases.first, let packageLatest = packageReleases.first else {
+            print("One of the repositories has no releases")
+            exit(EXIT_FAILURE)
+        }
+        guard intercomLatest.tagName != packageLatest.tagName else {
+            print("Version \(packageLatest.tagName) is latest")
+            exit(EXIT_SUCCESS)
+        }
+        
+        print("Updating Package.swift ...")
+        let packageDotSwift = try await packageDotSwift(from: packageDotSwiftURL)
+        guard packageDotSwift != "" else {
+            print("New Package.swift not available")
+            exit(EXIT_FAILURE)
+        }
+        try updatePackageDotSwift(with: packageDotSwift)
+        print("Package.swift updated successfully")
+        
+        print("Pushing changes to master ...")
+        try pushChanges(release: intercomLatest)
+        print("Changes pushed to master successfully")
+        
+        print("Creating release \(intercomLatest.tagName) ...")
+        let payload = ReleasePayload(tagName: intercomLatest.tagName, name: intercomLatest.tagName, body: intercomLatest.body)
+        try await createRelease(accessToken: accessToken, url: packageReleasesURL, payload: payload)
+        print("Release \(intercomLatest.tagName) created successfully")
     }
 }
-
-RunLoop.current.run()
