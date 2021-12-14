@@ -4,12 +4,14 @@ on:
   schedule:
     - cron:  '0 0,6,12,18 * * *'
   workflow_dispatch:
+env:
+  DEVELOPER_DIR: /Applications/Xcode_13.2.app/Contents/Developer
 
 jobs:
   update:
-    runs-on: ubuntu-latest
+    runs-on: macos-11
     
     steps:
     - uses: actions/checkout@v2
     - name: Run update script
-      run: swift update.swift ${{ secrets.GITHUB_TOKEN }}
+      run: xcrun swift update.swift ${{ secrets.GITHUB_TOKEN }}
