@@ -50,6 +50,7 @@ extension URLSession {
 
 
 // MARK: - Models
+
 struct Release: Decodable {
     let tagName: String
     let body: String
@@ -63,6 +64,7 @@ struct ReleasePayload: Encodable {
 
 
 // MARK: - Errors
+
 enum UpdateError: Error {
     case fetchReleases(statusCode: Int)
     case createRelease(statusCode: Int)
@@ -74,6 +76,7 @@ enum UpdateError: Error {
 
 
 // MARK: - Networking
+
 func releases(from url: URL) async throws -> [Release] {
     let (data, response) = try await URLSession.shared.data(from: url)
     if let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode >= 400 {
@@ -115,6 +118,7 @@ func packageDotSwift(from url: URL) async throws -> String {
 
 
 // MARK: - Shell
+
 func git(_ args: String...) throws {
     let process = Process()
     let url = URL(fileURLWithPath: "/usr/bin/git")
@@ -126,6 +130,7 @@ func git(_ args: String...) throws {
 
 
 // MARK: - Helpers
+
 func accessToken() throws -> String {
     guard CommandLine.arguments.count > 1 else { throw UpdateError.noAccessToken }
     return CommandLine.arguments[1]
@@ -152,6 +157,7 @@ func pushChanges(release: Release) throws {
 
 
 // MARK: - Execution
+
 let executionTask = Task.detached {
     guard let intercomReleasesURL = URL(string: "https://api.github.com/repos/intercom/intercom-ios/releases"),
           let packageReleasesURL = URL(string: "https://api.github.com/repos/FelixHerrmann/intercom-ios/releases"),
