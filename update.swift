@@ -8,12 +8,7 @@ import FoundationNetworking
 
 extension URLSession {
     
-    /// Convenience method to load data using an URLRequest, creates and resumes an URLSessionDataTask internally.
-    ///
-    /// - Parameter request: The URLRequest for which to load data.
-    /// - Parameter delegate: Task-specific delegate.
-    /// - Returns: Data and response.
-    public func data(for request: URLRequest) async throws -> (Data, URLResponse) {
+    func data(for request: URLRequest) async throws -> (Data, URLResponse) {
         return try await withUnsafeThrowingContinuation { continuation in
             let dataTask = URLSession.shared.dataTask(with: request) { data, response, error in
                 guard let data = data, let response = response else {
@@ -26,13 +21,8 @@ extension URLSession {
             dataTask.resume()
         }
     }
-
-    /// Convenience method to load data using an URL, creates and resumes an URLSessionDataTask internally.
-    ///
-    /// - Parameter url: The URL for which to load data.
-    /// - Parameter delegate: Task-specific delegate.
-    /// - Returns: Data and response.
-    public func data(from url: URL, delegate: URLSessionTaskDelegate? = nil) async throws -> (Data, URLResponse) {
+    
+    func data(from url: URL) async throws -> (Data, URLResponse) {
         return try await withUnsafeThrowingContinuation { continuation in
             let dataTask = URLSession.shared.dataTask(with: url) { data, response, error in
                 guard let data = data, let response = response else {
