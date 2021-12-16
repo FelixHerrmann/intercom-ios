@@ -11,5 +11,7 @@ jobs:
     
     steps:
     - uses: actions/checkout@v2
+    - name: Set name in local git-config
+      run: git config --local user.name "runner"
     - name: Run update script
       run: swift update.swift ${{ secrets.GITHUB_TOKEN }}
