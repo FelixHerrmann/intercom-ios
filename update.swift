@@ -191,6 +191,7 @@ let executionTask = Task.detached {
 Task {
     do {
         _ = try await executionTask.value
+        exit(EXIT_SUCCESS)
     } catch {
         print("Error:", error)
         exit(EXIT_FAILURE)
