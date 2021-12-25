@@ -8,7 +8,7 @@
 
 A Swift Package for the [Intercom iOS SDK](https://github.com/intercom/intercom-ios), because their repository is ~[1.7GB](https://api.github.com/repos/intercom/intercom-ios).
 
-> This repository updates itself; every 6 hours the [update-workflow](https://github.com/FelixHerrmann/intercom-ios/actions/workflows/update.yml) runs
+> This repository updates itself; every hour the [update-workflow](https://github.com/FelixHerrmann/intercom-ios/actions/workflows/update.yml) runs
 > and checks for a new version.
 
 
