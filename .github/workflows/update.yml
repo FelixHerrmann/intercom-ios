@@ -13,8 +13,5 @@ jobs:
     - uses: actions/checkout@v2
     - name: Set name in local git-config
       run: git config --local user.name "runner"
-    - uses: nick-fields/retry@v2
-      with:
-        timeout_minutes: 5
-        max_attempts: 3
-        command: swift update.swift ${{ secrets.GITHUB_TOKEN }}
+    - name: Run update script
+       run: swift update.swift ${{ secrets.GITHUB_TOKEN }}
