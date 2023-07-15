@@ -1,7 +1,7 @@
 # intercom-ios
 
 > **Warning**  
-> This repository is now deprecated. Please migrate to [Intercom's official Swift Package repository](https://github.com/intercom/intercom-ios-sp/tree/master) which resolves the size issue.
+> This repository is now deprecated. Please migrate to [Intercom's official Swift Package repository](https://github.com/intercom/intercom-ios-sp) which resolves the size issue.
 
 A Swift Package for the [Intercom iOS SDK](https://github.com/intercom/intercom-ios), because their repository is ~[2.0GB](https://api.github.com/repos/intercom/intercom-ios).
 
